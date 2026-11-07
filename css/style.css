@@ -28,7 +28,7 @@ small,.mut{color:var(--mut)}.small{font-size:13px}
 .brand{display:flex;align-items:center;gap:10px}
 .brand b{display:block;font-weight:800;letter-spacing:.06em;font-size:16px}.brand small{font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--or),var(--or2));box-shadow:0 8px 20px rgba(255,122,26,.35)}
-.logo svg{width:22px;height:22px;fill:var(--on-or)}
+.logo svg{width:24px;height:auto;fill:var(--on-or)}
 #nav{display:flex;flex-direction:column;gap:4px;flex:1}
 .nh{margin:14px 10px 4px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
 .nl{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 12px;border-radius:12px;color:var(--mut);font-weight:500;transition:background .15s,color .15s}
@@ -145,15 +145,27 @@ small,.mut{color:var(--mut)}.small{font-size:13px}
 li[data-st=late] .tnode{background:#FFF1F3}li[data-st=risk] .tnode{background:#FFF8E8}li[data-st=ok] .tnode{background:#F0FBF6}li[data-st=done] .tnode{background:#EEF5FF}
 .rp-foot{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 
-/* Cetak: hanya dokumen, A4 mendatar, warna tetap tercetak */
-@page{size:A4 landscape;margin:10mm}
+/* Print / PDF: only the document, A4 portrait. The branching map prints as a VERTICAL tree so it flows across
+   pages without big blank gaps (a flex row cannot be split across pages). */
+@page{size:A4;margin:12mm}
 @media print{
-  body{background:#fff!important}
+  html,body{background:#fff!important;height:auto!important}
   body.report-open>*{display:none!important}
-  body.report-open>#report{display:block!important;position:static!important;background:#fff!important}
-  .no-print{display:none!important}.rscroll{overflow:visible!important;padding:0!important}
-  .paper{box-shadow:none!important;max-width:none!important;padding:0!important;border-radius:0!important}
-  .tnode,.rbox,.rp-who li{break-inside:avoid}
+  body.report-open>#report{display:block!important;position:static!important;background:#fff!important;overflow:visible!important}
+  .no-print{display:none!important}
+  .rscroll{display:block!important;overflow:visible!important;padding:0!important;flex:none!important}
+  .paper{box-shadow:none!important;max-width:none!important;width:auto!important;padding:0!important;border-radius:0!important;font-size:12px}
+  .rp-head h1{font-size:22px}
+  .rp-sum{gap:6px!important;margin:10px 0!important}
+  .tree{display:block!important;margin:6px 0!important}
+  .troot{width:auto!important;margin-bottom:12px}
+  .tbranch{display:block!important;margin:0!important;margin-inline-start:14px!important;border-inline-start:3px solid var(--tl)!important}
+  .tbranch::before,.tbranch>li::after{display:none!important}
+  .tbranch>li{padding-block:6px!important;padding-inline-start:22px!important;padding-inline-end:0!important}
+  .tbranch>li::before{width:22px!important}
+  .rp-h,.tn-h,.tnode>p{break-after:avoid}
+  .rbox,.rp-who li,.troot,.tn-log li,.rthumbs img,.tnode{break-inside:avoid}
+  .tnode:has(.tn-log){break-inside:auto}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 
@@ -259,3 +271,8 @@ html[dir=rtl] input[type=tel],html[dir=rtl] input[type=number],html[dir=rtl] inp
 .poslist{display:grid;gap:10px;margin:14px 0}.posrow{display:flex;gap:8px;align-items:center}
 .posrow input{flex:1;min-width:0;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#08142A;color:var(--tx);font:inherit;font-size:16px}
 .posrow input:focus{outline:0;border-color:var(--or);box-shadow:0 0 0 3px rgba(255,122,26,.25)}
+
+/* Auto backup banner, settings checkbox, snapshot list */
+.bk{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 16px;border:1px solid var(--or);background:rgba(255,122,26,.1);border-radius:14px}
+.chk{display:flex;gap:10px;align-items:center;cursor:pointer;min-height:44px}.chk input{width:22px;height:22px;accent-color:var(--or);flex:none}
+.snap{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px}.snap small{display:block}

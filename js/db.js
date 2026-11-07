@@ -67,9 +67,16 @@ const Backup = {
       if (b) images[id] = await new Promise((r) => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); });
     }
     const blob = new Blob([JSON.stringify({ app: 'the-manager', v: 1, db: Data.db, images })], { type: 'application/json' });
+    const name = 'the-manager-backup-' + toISO(new Date()) + '.json', file = new File([blob], name, { type: 'application/json' });
+    // Phones: open the share sheet (save to Files / Drive / WhatsApp...). Elsewhere: normal download.
+    if (matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'THE MANAGER backup' }); return true; }
+      catch (e) { if (e && e.name === 'AbortError') return false; /* cancelled: not saved */ }
+    }
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'the-manager-backup-' + toISO(new Date()) + '.json'; a.click();
+    a.href = URL.createObjectURL(blob); a.download = name; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    return true;
   },
   async import(file) {
     const j = JSON.parse(await file.text());

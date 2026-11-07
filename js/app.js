@@ -15,7 +15,7 @@ function parseRoute() {
 function render(keepScroll) {
   const y = window.scrollY; ROUTE = parseRoute();
   $('#nav').innerHTML = Views.nav(ROUTE.pid || 'home');
-  $('#view').innerHTML = ROUTE.sid ? Views.sub(ROUTE.pid, ROUTE.sid) : ROUTE.pid ? Views.project(ROUTE.pid) : Views.dashboard();
+  $('#view').innerHTML = Views.backupBanner() + (ROUTE.sid ? Views.sub(ROUTE.pid, ROUTE.sid) : ROUTE.pid ? Views.project(ROUTE.pid) : Views.dashboard());
   hydrateImages(); updateBadge(); window.scrollTo(0, keepScroll ? y : 0);
 }
 function changed(msg) { Notify.check(); render(true); if (msg) toast(msg); }
@@ -25,6 +25,7 @@ function toast(msg) { const e = $('#toast'); e.textContent = msg; e.hidden = fal
 
 /** Texts that live in static HTML (re-run after changing language). */
 function applyStatic() {
+  $('#logo').innerHTML = LOGO_SVG;
   $('#tagline').textContent = t('tagline'); document.title = 'THE MANAGER – ' + t('tagline');
   $('#lang').innerHTML = langOptions(); $('#lang').setAttribute('aria-label', t('language'));
   $('#langbtn').innerHTML = Flags.svg(LANG); $('#langbtn').setAttribute('aria-label', t('language'));
@@ -72,8 +73,8 @@ function openForm({ title, fields, values = {}, extra = '', onOpen, onSave }) {
     closeModal();
   });
 }
-function confirmBox(msg, onYes) {
-  openModal(`<div class="mh"><h2>${t('delete')}</h2></div><p class="cmsg">${msg}</p><div class="mf"><button class="btn ghost" data-act="close" type="button">${t('cancel')}</button><button class="btn danger-solid" id="yes" type="button">${t('yesDelete')}</button></div>`);
+function confirmBox(msg, onYes, label = t('yesDelete'), title = t('delete'), cls = 'danger-solid') {
+  openModal(`<div class="mh"><h2>${title}</h2></div><p class="cmsg">${msg}</p><div class="mf"><button class="btn ghost" data-act="close" type="button">${t('cancel')}</button><button class="btn ${cls}" id="yes" type="button">${label}</button></div>`);
   $('#yes').addEventListener('click', () => { closeModal(); onYes(); });
 }
 
@@ -119,9 +120,10 @@ function updateForm(pid, sid) {
   openForm({
     title: t('tUpdate'), values: { progress: s.progress },
     fields: [{ name: 'progress', label: t('fProgress'), type: 'number', min: 0, max: 100, req: true }, { name: 'note', label: t('fNote'), wide: true, area: true }],
-    extra: `<label class="fld wide"><span>${t('fPhotos')}</span><input id="files" type="file" accept="image/*" multiple><div id="prev" class="prev"></div></label>`,
+    extra: `<div class="fld wide"><span>${t('fPhotos')}</span><div class="srow"><label class="btn ghost sm filebtn" for="files">${t('addPhotos')}</label><input id="files" type="file" accept="image/*" multiple hidden><span id="fcount" class="mut small"></span></div><div id="prev" class="prev"></div></div>`,
     onOpen() {
       $('#files').addEventListener('change', (e) => {
+        $('#fcount').textContent = e.target.files.length ? t('photosSel', { n: e.target.files.length }) : '';
         $('#prev').innerHTML = ''; [...e.target.files].forEach((f) => { const im = document.createElement('img'); im.src = URL.createObjectURL(f); im.alt = ''; $('#prev').appendChild(im); });
       });
     },
@@ -153,10 +155,10 @@ function showAuth() {
   a.innerHTML = Views.auth(Auth.hasAccount() ? 'login' : 'setup'); a.hidden = false;
 }
 async function enter() {
-  await Data.load(); $('#auth').hidden = true; document.body.classList.remove('locked');
+  await Data.load(); await AutoBackup.check(); $('#auth').hidden = true; document.body.classList.remove('locked');
   Notify.check(); render();
   if (!DB.persistent) toast(t('sStorage'));
-  if (!enter.timer) enter.timer = setInterval(() => { if (Auth.ok && Data.db) { Notify.check(); updateBadge(); } }, 30 * 60 * 1000);
+  if (!enter.timer) enter.timer = setInterval(() => { if (Auth.ok && Data.db) { Notify.check(); AutoBackup.check().then(() => { if (AutoBackup.due()) render(true); }); updateBadge(); } }, 30 * 60 * 1000);
 }
 document.addEventListener('submit', async (e) => {
   const f = e.target;
@@ -193,7 +195,7 @@ document.addEventListener('click', async (e) => {
   const b = e.target.closest('[data-act]'); if (!b || b.dataset.act === 'prog' || b.tagName === 'SELECT') return;
   const d = b.dataset, pid = d.pid || ROUTE.pid, sid = d.sid || ROUTE.sid, p = pid && Data.db && Data.project(pid), s = p && sid && Data.sub(pid, sid);
   const A = {
-    close: closeModal, 'close-report': closeReport, print: () => { try { window.print(); } catch (x) { toast('Print unavailable'); } },
+    close: closeModal, 'close-report': closeReport, print: () => { try { window.print(); } catch (x) { toast(t('prUnavail')); } },
     export: () => openReport(ROUTE.pid),
     'add-project': () => projectForm(), 'edit-project': () => projectForm(p),
     'del-project': () => confirmBox(t('delProjQ', { n: esc(p.name) }), async () => { await Data.removeProject(pid); location.hash = '#/'; render(); toast(t('tDeleted')); }),
@@ -215,7 +217,11 @@ document.addEventListener('click', async (e) => {
     'pos-del': () => b.closest('.posrow').remove(),
     'pos-reset': () => document.querySelectorAll('#poslist .posrow').forEach((li) => { if (DEFAULT_POS.includes(li.dataset.id)) li.querySelector('input').value = ''; }),
     'notif-enable': async () => { await Notify.enable(); openModal(Views.settings()); },
-    'export-backup': () => Backup.export(),
+    'export-backup': async () => { if (await Backup.export()) { AutoBackup.markExported(); render(true); openModal(Views.settings()); } },
+    'backup-now': async () => { if (await Backup.export()) { AutoBackup.markExported(); render(true); toast(t('tSaved')); } },
+    'backup-later': () => { AutoBackup.snooze(); render(true); },
+    snaps: async () => openModal(Views.snaps(await AutoBackup.snapshots())),
+    'snap-restore': () => confirmBox(t('abRestoreQ', { d: fmtDateTime(Number(d.ts)) }), async () => { await AutoBackup.restore(Number(d.ts)); Notify.check(); location.hash = '#/'; render(); toast(t('tSaved')); }, t('abRestore'), t('abRestore'), ''),
     demo: () => confirmBox(t('demoQ'), async () => { await Data.reset(); Notify.check(); location.hash = '#/'; render(); toast(t('tSaved')); }),
     erase: () => confirmBox(t('eraseQ'), async () => { await Data.eraseAll(); Auth.logout(); location.reload(); }),
     forgot: () => confirmBox(t('eraseQ'), async () => { await Data.eraseAll(); Auth.logout(); location.reload(); }),
@@ -230,13 +236,14 @@ document.addEventListener('change', async (e) => {
   const el = e.target;
   if (el.dataset.act === 'prog') { Data.upsertSub(ROUTE.pid, { id: el.dataset.sid, progress: Number(el.value) }); changed(); }
   else if (el.id === 'lang' || el.classList.contains('langsel')) { setLang(el.value); applyStatic(); if (!$('#auth').hidden) showAuth(); else if (Data.db) render(true); }
+  else if (el.id === 'abtoggle') { AutoBackup.cfg().on = el.checked; Data.save(); render(true); }
   else if (el.id === 'impfile' && el.files[0]) {
-    try { await Backup.import(el.files[0]); Notify.check(); closeModal(); render(); toast(t('sImpOk')); } catch (x) { toast(t('sImpBad')); }
+    try { await Backup.import(el.files[0]); AutoBackup.markExported(); Notify.check(); closeModal(); render(); toast(t('sImpOk')); } catch (x) { toast(t('sImpBad')); }
   }
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!modal.hidden) closeModal(); else closeReport(); } });
 window.addEventListener('hashchange', () => { if (Data.db && Auth.ok) { closeReport(); render(); } });
-document.addEventListener('visibilitychange', () => { if (!document.hidden && Auth.ok && Data.db) { Notify.check(); updateBadge(); } });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && Auth.ok && Data.db) { Notify.check(); AutoBackup.check().then(() => { if (AutoBackup.due()) render(true); }); updateBadge(); } });
 
 /* ---------- Boot ---------- */
 (async function boot() {

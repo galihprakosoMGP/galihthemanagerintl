@@ -8,11 +8,26 @@ const empty = (title, sub, btn = '') => `<div class="empty"><b>${title}</b><span
 const gapText = (x) => (x.st === 'done' ? t('finished') : x.exp - x.s.progress > 0 ? t('behind', { n: x.exp - x.s.progress }) : t('onSched'));
 const hrefOf = (p, s) => `#/p/${p.id}` + (s ? `/s/${s.id}` : '');
 const langOptions = () => LANGS.map(([c, n]) => `<option value="${c}" ${c === LANG ? 'selected' : ''}>${n}</option>`).join('');
+const fmtDateTime = (ts) => new Date(ts).toLocaleString(locale(), { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 const initials = (n) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 /** Clickable person name: opens the contact card. */
 const personBtn = (p, s, m) => (m ? `<button class="person" type="button" data-act="person" data-pid="${p.id}" data-sid="${s.id}" data-id="${m.id}">${esc(m.name)}</button>` : '<span class="mut">–</span>');
 
 const Views = {
+  /** Reminder shown at the top of the dashboard/project pages when a backup file is due. */
+  backupBanner() {
+    if (!AutoBackup.due()) return '';
+    const c = AutoBackup.cfg();
+    return `<div class="bk" role="status"><span>${c.lastExport ? t('abDue', { n: AutoBackup.daysSince(c.lastExport) }) : t('abDueNever')}</span>
+      <div class="acts"><button class="btn sm" data-act="backup-now" type="button">${t('abSaveNow')}</button><button class="btn ghost sm" data-act="backup-later" type="button">${t('abLater')}</button></div></div>`;
+  },
+
+  snaps(list) {
+    return `<div class="mh"><h2>${t('abSnaps')}</h2><button class="x" data-act="close" type="button" aria-label="${t('close')}">×</button></div>
+      ${list.length ? `<ul class="nlist">${list.map((s) => `<li class="snap"><span>${fmtDateTime(s.ts)}<small class="mut">${t('projects')}: ${s.n}</small></span><button class="btn ghost sm" type="button" data-act="snap-restore" data-ts="${s.ts}">${t('abRestore')}</button></li>`).join('')}</ul>` : `<p class="mut">${t('abNoSnap')}</p>`}
+      <p class="mut small">${t('abNote')}</p><div class="mf"><button class="btn" data-act="close" type="button">${t('close')}</button></div>`;
+  },
+
   nav(active) {
     const links = Data.db.projects.map((p) => `<a href="#/p/${p.id}" class="nl" ${active === p.id ? 'aria-current="page"' : ''}><i style="background:${STATUS[Calc.project(p).status].color}"></i><span>${esc(p.name)}</span></a>`).join('');
     return `<a href="#/" class="nl" ${active === 'home' ? 'aria-current="page"' : ''}>${t('dashboard')}</a><p class="nh">${t('projects')}</p>${links}<button class="btn sm" data-act="add-project" type="button">${t('newProject')}</button>`;
@@ -159,7 +174,7 @@ const Views = {
   },
 
   settings() {
-    const ns = Notify.status();
+    const ns = Notify.status(), ab = AutoBackup.cfg();
     const nBtn = ns === 'on' ? `<span class="chip" style="--c:var(--ok)">${t('sEnabled')}</span>` : ns === 'blocked' ? `<span class="mut">${t('sBlocked')}</span>` : ns === 'na' ? '<span class="mut">–</span>' : `<button class="btn sm" data-act="notif-enable" type="button">${t('sEnable')}</button>`;
     return `<div class="mh"><h2>${t('settings')}</h2><button class="x" data-act="close" type="button" aria-label="${t('close')}">×</button></div>
       <p class="mut small">${APP.name} · ${t('sVersion')} ${APP.version}</p>
@@ -170,13 +185,17 @@ const Views = {
         <label class="fld"><span>${t('sNewPw')}</span><input name="nw" type="password" autocomplete="new-password"></label></div><p id="perr" class="err" role="alert" hidden></p><div class="mf"><button class="btn sm" type="submit">${t('save')}</button></div></form></div>
       <div class="sset"><h3>${t('sBackup')}</h3><div class="srow"><button class="btn ghost sm" data-act="export-backup" type="button">${t('sExport')}</button>
         <label class="btn ghost sm filebtn">${t('sImport')}<input id="impfile" type="file" accept="application/json,.json" hidden></label></div></div>
+      <div class="sset"><h3>${t('abTitle')}</h3>
+        <label class="chk"><input id="abtoggle" type="checkbox" ${ab.on ? 'checked' : ''}><span>${t('abToggle')}</span></label>
+        <p class="mut small">${t('abLastFile', { d: ab.lastExport ? fmtDateTime(ab.lastExport) : t('abNever') })}<br>${t('abLastSnap', { d: ab.lastSnap ? fmtDateTime(ab.lastSnap) : t('abNever') })}</p>
+        <div class="srow"><button class="btn ghost sm" data-act="snaps" type="button">${t('abSnaps')}</button></div></div>
       <div class="sset"><div class="srow"><button class="btn ghost sm" data-act="demo" type="button">${t('sDemo')}</button><button class="btn ghost sm danger" data-act="erase" type="button">${t('sErase')}</button></div></div>
       <div class="mf"><button class="btn ghost" data-act="signout" type="button">${t('signOut')}</button><button class="btn" data-act="close" type="button">${t('close')}</button></div>`;
   },
 
   auth(mode) {
     const setup = mode === 'setup';
-    return `<div class="acard"><div class="arow"><span class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg></span><b>THE MANAGER</b></span>
+    return `<div class="acard"><div class="arow"><span class="brand"><span class="logo" aria-hidden="true">${LOGO_SVG}</span><b>THE MANAGER</b></span>
         <select class="langsel" aria-label="${t('language')}">${langOptions()}</select>
         <button class="ibtn langbtn" type="button" data-act="langmenu" aria-label="${t('language')}">${Flags.svg(LANG)}</button></div>
       <h1>${setup ? t('aCreateT') : t('aWelcome', { n: esc(Auth.name()) })}</h1><p class="mut">${t('aLocal')}</p>

@@ -7,7 +7,7 @@
          updates: [ { id, date, progress, note, images: [imageId] } ] } ] } ],
      notifications: [ { id, type, pid, sid, vars, ts, read } ],
      notified: [ 'subId:late', ... ],   // already-announced alerts (avoid repeats)
-     settings: { notif: bool, positions: [ { id, name } ] } }   // positions = job titles; person.kind = position id
+     settings: { notif: bool, positions: [ { id, name } ], autoBackup: { on, days, lastExport, lastSnap, snooze, start } } }   // positions = job titles; person.kind = position id
    Sample data is in English. Dates are "YYYY-MM-DD".
    ============================================================ */
 const pad = (n) => String(n).padStart(2, '0');
@@ -20,6 +20,8 @@ const SPECIALTIES = ['Prototype Specialist', 'Motor Specialist', 'ESC Specialist
    name '' = use the default (translated) name. 'head' and 'deputy' are limited to one person per division. */
 const DEFAULT_POS = ['head', 'deputy', 'member'];
 const defaultPositions = () => DEFAULT_POS.map((id) => ({ id, name: '' }));
+/* Auto backup: on/off, interval (days), last saved backup FILE (0 = never), last snapshot, snooze-until, clock start. */
+const defaultAutoBackup = () => ({ on: true, days: 14, lastExport: 0, lastSnap: 0, snooze: 0, start: Date.now() });
 
 function seedData() {
   let n = 100; // fictional phone numbers (UK drama range)
@@ -27,7 +29,7 @@ function seedData() {
   const U = (ago, progress, note) => ({ id: uid(), date: dayOffset(-ago), progress, note, images: [] });
   const S = (name, target, progress, due, issue, people, updates = []) => ({ id: uid(), name, target, progress, deadline: dayOffset(due), issue, people, updates });
   return {
-    notifications: [], notified: [], settings: { notif: false, positions: defaultPositions() },
+    notifications: [], notified: [], settings: { notif: false, positions: defaultPositions(), autoBackup: defaultAutoBackup() },
     projects: [
       { id: uid(), name: 'VOLTRA Model A1', desc: 'Electric sedan, 500 km range', start: dayOffset(-100), deadline: dayOffset(80), subs: [
         S('Prototype Specialist', 'Prototype v3 ready for road testing', 78, 30, '', T(['Raka Pratama', 'Head of Prototyping'], ['Dewi Anggraini', 'Deputy, chassis integration'], ['Tom Becker', 'Test driver'], ['Ana Silva', 'Mechanical technician']), [U(20, 60, 'Frame assembly finished.'), U(6, 78, 'Road-test slot booked for next month.')]),
@@ -61,6 +63,7 @@ const Data = {
   normalize(d) {
     d.notifications = d.notifications || []; d.notified = d.notified || []; d.settings = d.settings || { notif: false };
     if (!Array.isArray(d.settings.positions)) d.settings.positions = defaultPositions();
+    if (!d.settings.autoBackup) d.settings.autoBackup = defaultAutoBackup();
     d.projects.forEach((p) => p.subs.forEach((s) => { s.people = s.people || []; s.updates = s.updates || []; }));
     return d;
   },
