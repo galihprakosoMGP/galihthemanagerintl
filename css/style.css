@@ -276,3 +276,6 @@ html[dir=rtl] input[type=tel],html[dir=rtl] input[type=number],html[dir=rtl] inp
 .bk{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 16px;border:1px solid var(--or);background:rgba(255,122,26,.1);border-radius:14px}
 .chk{display:flex;gap:10px;align-items:center;cursor:pointer;min-height:44px}.chk input{width:22px;height:22px;accent-color:var(--or);flex:none}
 .snap{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px}.snap small{display:block}
+
+/* Install self-check (Settings) */
+.chklist{display:grid;gap:4px;font-size:13px}.chklist li{display:flex;gap:8px}.chklist .ok{color:var(--ok);font-weight:700}.chklist .no{color:var(--late);font-weight:700}

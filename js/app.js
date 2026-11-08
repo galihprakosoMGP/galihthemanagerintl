@@ -15,7 +15,7 @@ function parseRoute() {
 function render(keepScroll) {
   const y = window.scrollY; ROUTE = parseRoute();
   $('#nav').innerHTML = Views.nav(ROUTE.pid || 'home');
-  $('#view').innerHTML = Views.backupBanner() + (ROUTE.sid ? Views.sub(ROUTE.pid, ROUTE.sid) : ROUTE.pid ? Views.project(ROUTE.pid) : Views.dashboard());
+  $('#view').innerHTML = Views.installBanner() + Views.backupBanner() + (ROUTE.sid ? Views.sub(ROUTE.pid, ROUTE.sid) : ROUTE.pid ? Views.project(ROUTE.pid) : Views.dashboard());
   hydrateImages(); updateBadge(); window.scrollTo(0, keepScroll ? y : 0);
 }
 function changed(msg) { Notify.check(); render(true); if (msg) toast(msg); }
@@ -72,6 +72,12 @@ function openForm({ title, fields, values = {}, extra = '', onOpen, onSave }) {
     if (err) return showErr(err);
     closeModal();
   });
+}
+/** Settings dialog; the install self-check is filled in afterwards (it needs async browser queries). */
+async function openSettings() {
+  openModal(Views.settings());
+  const rows = await Install.checks(), box = $('#inchk');
+  if (box) box.innerHTML = rows.map(([k, ok]) => `<li><span class="${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span><span>${t(k)}</span></li>`).join('');
 }
 function confirmBox(msg, onYes, label = t('yesDelete'), title = t('delete'), cls = 'danger-solid') {
   openModal(`<div class="mh"><h2>${title}</h2></div><p class="cmsg">${msg}</p><div class="mf"><button class="btn ghost" data-act="close" type="button">${t('cancel')}</button><button class="btn ${cls}" id="yes" type="button">${label}</button></div>`);
@@ -185,7 +191,7 @@ document.addEventListener('submit', async (e) => {
     e.preventDefault();
     const err = Pos.save([...f.querySelectorAll('.posrow')].map((li) => ({ id: li.dataset.id, name: li.querySelector('input').value })));
     if (err) return showErr(err, 'perr2');
-    changed(t('tSaved')); openModal(Views.settings());
+    changed(t('tSaved')); openSettings();
   }
 });
 
@@ -208,16 +214,18 @@ document.addEventListener('click', async (e) => {
     photo: () => openModal(`<button class="x lbx" data-act="close" type="button" aria-label="${t('close')}">×</button><img class="lbimg" data-img="${d.img}" alt="">`, 'lb'),
     langmenu: () => openModal(Views.langMenu()),
     setlang: () => { setLang(d.lang); applyStatic(); closeModal(); if (!$('#auth').hidden) showAuth(); else if (Data.db) render(true); },
+    install: async () => { const ok = await Install.prompt(); render(true); if (!modal.hidden) openSettings(); if (ok) toast(t('inDone')); },
+    'install-later': () => { Install.dismiss(); render(true); },
     notifs: () => openModal(Views.notifs()),
     'read-all': () => { Notify.markAllRead(); updateBadge(); openModal(Views.notifs()); },
     'open-notif': () => { const n = Data.db.notifications.find((x) => x.id === d.nid); n.read = true; Data.save(); closeModal(); location.hash = Data.sub(n.pid, n.sid) ? `#/p/${n.pid}/s/${n.sid}` : '#/'; render(); },
-    settings: () => openModal(Views.settings()),
+    settings: () => openSettings(),
     positions: () => openModal(Views.positions()),
     'pos-add': () => { const tmp = document.createElement('ul'); tmp.innerHTML = Views.posRow({ id: 'p_' + uid(), name: '' }); const li = tmp.firstElementChild; $('#poslist').appendChild(li); li.querySelector('input').focus(); },
     'pos-del': () => b.closest('.posrow').remove(),
     'pos-reset': () => document.querySelectorAll('#poslist .posrow').forEach((li) => { if (DEFAULT_POS.includes(li.dataset.id)) li.querySelector('input').value = ''; }),
-    'notif-enable': async () => { await Notify.enable(); openModal(Views.settings()); },
-    'export-backup': async () => { if (await Backup.export()) { AutoBackup.markExported(); render(true); openModal(Views.settings()); } },
+    'notif-enable': async () => { await Notify.enable(); openSettings(); },
+    'export-backup': async () => { if (await Backup.export()) { AutoBackup.markExported(); render(true); openSettings(); } },
     'backup-now': async () => { if (await Backup.export()) { AutoBackup.markExported(); render(true); toast(t('tSaved')); } },
     'backup-later': () => { AutoBackup.snooze(); render(true); },
     snaps: async () => openModal(Views.snaps(await AutoBackup.snapshots())),

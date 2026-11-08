@@ -3,7 +3,7 @@
    For every release: bump `version` here AND CACHE_VERSION in sw.js,
    otherwise installed phones keep serving the old cached files.
    ============================================================ */
-const APP = { name: 'THE MANAGER', version: '0.9.0-beta.3', released: '2026-11-05' };
+const APP = { name: 'THE MANAGER', version: '0.9.0-beta.4', released: '2026-11-05' };
 
 /* Logo mark: a bold geometric "M" (single path, one colour = currentColor-style fill set by CSS).
    Same shape as src/icons/icon.svg (app icon). */

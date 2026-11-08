@@ -14,6 +14,12 @@ const initials = (n) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toU
 const personBtn = (p, s, m) => (m ? `<button class="person" type="button" data-act="person" data-pid="${p.id}" data-sid="${s.id}" data-id="${m.id}">${esc(m.name)}</button>` : '<span class="mut">–</span>');
 
 const Views = {
+  /** Install banner (Android/desktop Chrome: Install button; iPhone: how-to). Hidden when installed or dismissed for 7 days. */
+  installBanner() {
+    const o = Install.offer(); if (!o) return '';
+    return `<div class="bk" role="status"><span>${o === 'ios' ? t('inIos') : t('inBanner')}</span><div class="acts">${o === 'prompt' ? `<button class="btn sm" data-act="install" type="button">${t('inBtn')}</button>` : ''}<button class="btn ghost sm" data-act="install-later" type="button">${t('inLater')}</button></div></div>`;
+  },
+
   /** Reminder shown at the top of the dashboard/project pages when a backup file is due. */
   backupBanner() {
     if (!AutoBackup.due()) return '';
@@ -179,6 +185,9 @@ const Views = {
     return `<div class="mh"><h2>${t('settings')}</h2><button class="x" data-act="close" type="button" aria-label="${t('close')}">×</button></div>
       <p class="mut small">${APP.name} · ${t('sVersion')} ${APP.version}</p>
       <p class="mut small">${t('sLocalDb')} ${Auth.name() ? '· ' + esc(Auth.name()) : ''}</p>${DB.persistent ? '' : `<p class="warn">${t('sStorage')}</p>`}
+      <div class="sset"><h3>${t('inTitle')}</h3>
+        ${Install.standalone() ? `<p class="mut small">${t('inDone')}</p>` : Install.deferred ? `<div class="srow"><button class="btn sm" data-act="install" type="button">${t('inBtn')}</button></div>` : `<p class="mut small">${Install.ios() ? t('inIos') : t('inMenu')}</p>`}
+        <ul id="inchk" class="chklist"></ul></div>
       <div class="sset"><div class="srow"><h3>${t('sNotif')}</h3>${nBtn}</div></div>
       <div class="sset"><div class="srow"><h3>${t('sPos')}</h3><button class="btn ghost sm" data-act="positions" type="button">${t('edit')}</button></div></div>
       <div class="sset"><h3>${t('sPw')}</h3><form id="pwf" novalidate><div class="fgrid"><label class="fld"><span>${t('sOldPw')}</span><input name="old" type="password" autocomplete="current-password"></label>

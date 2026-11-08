@@ -180,7 +180,19 @@ const I18N = {
   "abNote": "Snapshots stay on this device and do not include photos. Save a backup file to keep your data safe.",
   "addPhotos": "Add photos",
   "photosSel": "{n} selected",
-  "prUnavail": "Printing is not available here"
+  "prUnavail": "Printing is not available here",
+  "inTitle": "Install app",
+  "inBtn": "Install",
+  "inLater": "Later",
+  "inBanner": "Install THE MANAGER on this device for quick access and offline use.",
+  "inIos": "On iPhone: open this page in Safari, tap Share, then Add to Home Screen.",
+  "inMenu": "Open the browser menu (⋮) and choose Install app or Add to Home screen.",
+  "inDone": "Installed on this device.",
+  "inHttps": "Secure connection (HTTPS)",
+  "inSw": "Offline engine (service worker) active",
+  "inManifest": "App manifest found",
+  "inPrompt": "Install prompt available",
+  "inStandalone": "Running as an installed app"
  },
  "de": {
   "tagline": "Projektüberwachung",
@@ -358,7 +370,19 @@ const I18N = {
   "abNote": "Snapshots bleiben auf diesem Gerät und enthalten keine Fotos. Speichern Sie eine Sicherungsdatei, um Ihre Daten zu schützen.",
   "addPhotos": "Fotos hinzufügen",
   "photosSel": "{n} ausgewählt",
-  "prUnavail": "Drucken ist hier nicht verfügbar"
+  "prUnavail": "Drucken ist hier nicht verfügbar",
+  "inTitle": "App installieren",
+  "inBtn": "Installieren",
+  "inLater": "Später",
+  "inBanner": "Installieren Sie THE MANAGER auf diesem Gerät für schnellen Zugriff und Offline-Nutzung.",
+  "inIos": "Auf dem iPhone: Diese Seite in Safari öffnen, auf Teilen tippen, dann „Zum Home-Bildschirm“.",
+  "inMenu": "Öffnen Sie das Browsermenü (⋮) und wählen Sie „App installieren“ oder „Zum Startbildschirm hinzufügen“.",
+  "inDone": "Auf diesem Gerät installiert.",
+  "inHttps": "Sichere Verbindung (HTTPS)",
+  "inSw": "Offline-Modul (Service Worker) aktiv",
+  "inManifest": "App-Manifest gefunden",
+  "inPrompt": "Installationsaufforderung verfügbar",
+  "inStandalone": "Läuft als installierte App"
  },
  "nl": {
   "tagline": "Projectmonitoring",
@@ -536,7 +560,19 @@ const I18N = {
   "abNote": "Snapshots blijven op dit apparaat en bevatten geen foto's. Sla een back-upbestand op om je gegevens veilig te houden.",
   "addPhotos": "Foto's toevoegen",
   "photosSel": "{n} geselecteerd",
-  "prUnavail": "Afdrukken is hier niet beschikbaar"
+  "prUnavail": "Afdrukken is hier niet beschikbaar",
+  "inTitle": "App installeren",
+  "inBtn": "Installeren",
+  "inLater": "Later",
+  "inBanner": "Installeer THE MANAGER op dit apparaat voor snelle toegang en offline gebruik.",
+  "inIos": "Op iPhone: open deze pagina in Safari, tik op Deel en kies Zet op beginscherm.",
+  "inMenu": "Open het browsermenu (⋮) en kies App installeren of Toevoegen aan startscherm.",
+  "inDone": "Geïnstalleerd op dit apparaat.",
+  "inHttps": "Beveiligde verbinding (HTTPS)",
+  "inSw": "Offline-module (service worker) actief",
+  "inManifest": "App-manifest gevonden",
+  "inPrompt": "Installatiemelding beschikbaar",
+  "inStandalone": "Draait als geïnstalleerde app"
  },
  "es": {
   "tagline": "Seguimiento de proyectos",
@@ -714,7 +750,19 @@ const I18N = {
   "abNote": "Las instantáneas se quedan en este dispositivo y no incluyen fotos. Guarde un archivo de copia para proteger sus datos.",
   "addPhotos": "Añadir fotos",
   "photosSel": "{n} seleccionadas",
-  "prUnavail": "La impresión no está disponible aquí"
+  "prUnavail": "La impresión no está disponible aquí",
+  "inTitle": "Instalar la app",
+  "inBtn": "Instalar",
+  "inLater": "Más tarde",
+  "inBanner": "Instale THE MANAGER en este dispositivo para acceso rápido y uso sin conexión.",
+  "inIos": "En iPhone: abra esta página en Safari, toque Compartir y luego «Añadir a pantalla de inicio».",
+  "inMenu": "Abra el menú del navegador (⋮) y elija Instalar app o Añadir a la pantalla de inicio.",
+  "inDone": "Instalada en este dispositivo.",
+  "inHttps": "Conexión segura (HTTPS)",
+  "inSw": "Motor sin conexión (service worker) activo",
+  "inManifest": "Manifiesto de la app encontrado",
+  "inPrompt": "Aviso de instalación disponible",
+  "inStandalone": "Ejecutándose como app instalada"
  },
  "it": {
   "tagline": "Monitoraggio progetti",
@@ -892,7 +940,19 @@ const I18N = {
   "abNote": "Gli snapshot restano su questo dispositivo e non includono le foto. Salva un file di backup per proteggere i tuoi dati.",
   "addPhotos": "Aggiungi foto",
   "photosSel": "{n} selezionate",
-  "prUnavail": "La stampa non è disponibile qui"
+  "prUnavail": "La stampa non è disponibile qui",
+  "inTitle": "Installa l'app",
+  "inBtn": "Installa",
+  "inLater": "Più tardi",
+  "inBanner": "Installa THE MANAGER su questo dispositivo per un accesso rapido e l'uso offline.",
+  "inIos": "Su iPhone: apri questa pagina in Safari, tocca Condividi e poi «Aggiungi a schermata Home».",
+  "inMenu": "Apri il menu del browser (⋮) e scegli Installa app o Aggiungi a schermata Home.",
+  "inDone": "Installata su questo dispositivo.",
+  "inHttps": "Connessione sicura (HTTPS)",
+  "inSw": "Motore offline (service worker) attivo",
+  "inManifest": "Manifest dell'app trovato",
+  "inPrompt": "Richiesta di installazione disponibile",
+  "inStandalone": "In esecuzione come app installata"
  },
  "zh-HK": {
   "tagline": "項目監察",
@@ -1070,7 +1130,19 @@ const I18N = {
   "abNote": "快照只保存在此裝置，且不含相片。請儲存備份檔案以保障資料安全。",
   "addPhotos": "新增相片",
   "photosSel": "已選 {n} 張",
-  "prUnavail": "此處無法列印"
+  "prUnavail": "此處無法列印",
+  "inTitle": "安裝應用程式",
+  "inBtn": "安裝",
+  "inLater": "稍後",
+  "inBanner": "在此裝置安裝 THE MANAGER，以便快速開啟及離線使用。",
+  "inIos": "iPhone：請用 Safari 開啟此頁，輕按「分享」，再選「加入主畫面」。",
+  "inMenu": "開啟瀏覽器選單（⋮），選擇「安裝應用程式」或「加到主畫面」。",
+  "inDone": "已安裝在此裝置。",
+  "inHttps": "安全連線（HTTPS）",
+  "inSw": "離線引擎（Service Worker）運作中",
+  "inManifest": "找到應用程式清單",
+  "inPrompt": "可顯示安裝提示",
+  "inStandalone": "以已安裝應用程式執行"
  },
  "ar": {
   "tagline": "مراقبة المشاريع",
@@ -1248,7 +1320,19 @@ const I18N = {
   "abNote": "تبقى اللقطات على هذا الجهاز ولا تتضمن الصور. احفظ ملف نسخ احتياطي لحماية بياناتك.",
   "addPhotos": "إضافة صور",
   "photosSel": "تم اختيار {n}",
-  "prUnavail": "الطباعة غير متاحة هنا"
+  "prUnavail": "الطباعة غير متاحة هنا",
+  "inTitle": "تثبيت التطبيق",
+  "inBtn": "تثبيت",
+  "inLater": "لاحقًا",
+  "inBanner": "ثبّت THE MANAGER على هذا الجهاز للوصول السريع والاستخدام دون اتصال.",
+  "inIos": "على آيفون: افتح هذه الصفحة في Safari، ثم اضغط مشاركة، ثم «إضافة إلى الشاشة الرئيسية».",
+  "inMenu": "افتح قائمة المتصفح (⋮) واختر تثبيت التطبيق أو إضافة إلى الشاشة الرئيسية.",
+  "inDone": "تم التثبيت على هذا الجهاز.",
+  "inHttps": "اتصال آمن (HTTPS)",
+  "inSw": "محرك العمل دون اتصال (Service Worker) يعمل",
+  "inManifest": "تم العثور على ملف بيان التطبيق",
+  "inPrompt": "نافذة التثبيت متاحة",
+  "inStandalone": "يعمل كتطبيق مثبّت"
  }
 };
 
