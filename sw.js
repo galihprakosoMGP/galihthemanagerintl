@@ -1,6 +1,6 @@
 /* Service worker: makes the app work offline (cache-first). Each file is cached separately, so one missing file cannot stop the worker from installing (which would also block installing the app).
    IMPORTANT: bump CACHE_VERSION every time you change any file, or users keep the old version. */
-const CACHE_VERSION = 'the-manager-v8';
+const CACHE_VERSION = 'the-manager-v9';
 const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'css/style.css', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
   'js/i18n.js', 'js/flags.js', 'js/config.js', 'js/install.js', 'js/autobackup.js', 'js/db.js', 'js/auth.js', 'js/data.js', 'js/calc.js', 'js/charts.js', 'js/notify.js', 'js/views.js', 'js/app.js'];
 
