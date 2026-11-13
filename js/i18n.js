@@ -192,7 +192,14 @@ const I18N = {
   "inSw": "Offline engine (service worker) active",
   "inManifest": "App manifest found",
   "inPrompt": "Install prompt available",
-  "inStandalone": "Running as an installed app"
+  "inStandalone": "Running as an installed app",
+  "edTitle": "Edit photo",
+  "edRotL": "Rotate left",
+  "edRotR": "Rotate right",
+  "edFree": "Free",
+  "edReset": "Reset",
+  "edApply": "Apply",
+  "edHint": "Drag the corners and edges to crop."
  },
  "de": {
   "tagline": "Projektüberwachung",
@@ -382,7 +389,14 @@ const I18N = {
   "inSw": "Offline-Modul (Service Worker) aktiv",
   "inManifest": "App-Manifest gefunden",
   "inPrompt": "Installationsaufforderung verfügbar",
-  "inStandalone": "Läuft als installierte App"
+  "inStandalone": "Läuft als installierte App",
+  "edTitle": "Foto bearbeiten",
+  "edRotL": "Nach links drehen",
+  "edRotR": "Nach rechts drehen",
+  "edFree": "Frei",
+  "edReset": "Zurücksetzen",
+  "edApply": "Übernehmen",
+  "edHint": "Ziehen Sie die Ecken und Kanten, um zuzuschneiden."
  },
  "nl": {
   "tagline": "Projectmonitoring",
@@ -572,7 +586,14 @@ const I18N = {
   "inSw": "Offline-module (service worker) actief",
   "inManifest": "App-manifest gevonden",
   "inPrompt": "Installatiemelding beschikbaar",
-  "inStandalone": "Draait als geïnstalleerde app"
+  "inStandalone": "Draait als geïnstalleerde app",
+  "edTitle": "Foto bewerken",
+  "edRotL": "Linksom draaien",
+  "edRotR": "Rechtsom draaien",
+  "edFree": "Vrij",
+  "edReset": "Herstellen",
+  "edApply": "Toepassen",
+  "edHint": "Sleep de hoeken en randen om bij te snijden."
  },
  "es": {
   "tagline": "Seguimiento de proyectos",
@@ -762,7 +783,14 @@ const I18N = {
   "inSw": "Motor sin conexión (service worker) activo",
   "inManifest": "Manifiesto de la app encontrado",
   "inPrompt": "Aviso de instalación disponible",
-  "inStandalone": "Ejecutándose como app instalada"
+  "inStandalone": "Ejecutándose como app instalada",
+  "edTitle": "Editar foto",
+  "edRotL": "Girar a la izquierda",
+  "edRotR": "Girar a la derecha",
+  "edFree": "Libre",
+  "edReset": "Restablecer",
+  "edApply": "Aplicar",
+  "edHint": "Arrastre las esquinas y los bordes para recortar."
  },
  "it": {
   "tagline": "Monitoraggio progetti",
@@ -952,7 +980,14 @@ const I18N = {
   "inSw": "Motore offline (service worker) attivo",
   "inManifest": "Manifest dell'app trovato",
   "inPrompt": "Richiesta di installazione disponibile",
-  "inStandalone": "In esecuzione come app installata"
+  "inStandalone": "In esecuzione come app installata",
+  "edTitle": "Modifica foto",
+  "edRotL": "Ruota a sinistra",
+  "edRotR": "Ruota a destra",
+  "edFree": "Libero",
+  "edReset": "Reimposta",
+  "edApply": "Applica",
+  "edHint": "Trascina gli angoli e i bordi per ritagliare."
  },
  "zh-HK": {
   "tagline": "項目監察",
@@ -1142,7 +1177,14 @@ const I18N = {
   "inSw": "離線引擎（Service Worker）運作中",
   "inManifest": "找到應用程式清單",
   "inPrompt": "可顯示安裝提示",
-  "inStandalone": "以已安裝應用程式執行"
+  "inStandalone": "以已安裝應用程式執行",
+  "edTitle": "編輯相片",
+  "edRotL": "向左旋轉",
+  "edRotR": "向右旋轉",
+  "edFree": "自由",
+  "edReset": "重設",
+  "edApply": "套用",
+  "edHint": "拖曳角落和邊緣即可裁剪。"
  },
  "ar": {
   "tagline": "مراقبة المشاريع",
@@ -1332,7 +1374,14 @@ const I18N = {
   "inSw": "محرك العمل دون اتصال (Service Worker) يعمل",
   "inManifest": "تم العثور على ملف بيان التطبيق",
   "inPrompt": "نافذة التثبيت متاحة",
-  "inStandalone": "يعمل كتطبيق مثبّت"
+  "inStandalone": "يعمل كتطبيق مثبّت",
+  "edTitle": "تعديل الصورة",
+  "edRotL": "تدوير لليسار",
+  "edRotR": "تدوير لليمين",
+  "edFree": "حر",
+  "edReset": "إعادة ضبط",
+  "edApply": "تطبيق",
+  "edHint": "اسحب الزوايا والحواف للقص."
  }
 };
 

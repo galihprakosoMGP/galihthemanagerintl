@@ -120,21 +120,33 @@ function personForm(pid, sid, m) {
     onSave(v) { Data.upsertPerson(pid, sid, { ...v, id: m && m.id }); changed(t('tSaved')); }
   });
 }
-/** Progress update: new progress %, a note and photos (stored on this device). */
+/** Progress update: new progress %, a note and photos. Every photo can be rotated/cropped (or removed) before it is saved. */
 function updateForm(pid, sid) {
-  const s = Data.sub(pid, sid);
+  const s = Data.sub(pid, sid), photos = []; // [{ file: original, blob: edited version or null, url: preview }]
+  const drawPhotos = () => {
+    $('#fcount').textContent = photos.length ? t('photosSel', { n: photos.length }) : '';
+    $('#prev').innerHTML = photos.map((p, i) => `<div class="pimg" data-i="${i}"><img src="${p.url}" alt=""><button type="button" class="pe" data-pa="edit" aria-label="${t('edit')}">✎</button><button type="button" class="px" data-pa="del" aria-label="${t('delete')}">×</button></div>`).join('');
+  };
   openForm({
     title: t('tUpdate'), values: { progress: s.progress },
     fields: [{ name: 'progress', label: t('fProgress'), type: 'number', min: 0, max: 100, req: true }, { name: 'note', label: t('fNote'), wide: true, area: true }],
     extra: `<div class="fld wide"><span>${t('fPhotos')}</span><div class="srow"><label class="btn ghost sm filebtn" for="files">${t('addPhotos')}</label><input id="files" type="file" accept="image/*" multiple hidden><span id="fcount" class="mut small"></span></div><div id="prev" class="prev"></div></div>`,
     onOpen() {
       $('#files').addEventListener('change', (e) => {
-        $('#fcount').textContent = e.target.files.length ? t('photosSel', { n: e.target.files.length }) : '';
-        $('#prev').innerHTML = ''; [...e.target.files].forEach((f) => { const im = document.createElement('img'); im.src = URL.createObjectURL(f); im.alt = ''; $('#prev').appendChild(im); });
+        [...e.target.files].forEach((f) => photos.push({ file: f, blob: null, url: URL.createObjectURL(f) }));
+        e.target.value = ''; drawPhotos(); // reset so the same file can be picked again
+      });
+      $('#prev').addEventListener('click', async (e) => {
+        const box = e.target.closest('.pimg'); if (!box) return;
+        const p = photos[Number(box.dataset.i)], btn = e.target.closest('[data-pa]'), act = btn ? btn.dataset.pa : 'edit';
+        if (act === 'del') { URL.revokeObjectURL(p.url); photos.splice(photos.indexOf(p), 1); return drawPhotos(); }
+        const out = await PhotoEditor.open(p.file); // always starts again from the original photo
+        if (out) { URL.revokeObjectURL(p.url); p.blob = out; p.url = URL.createObjectURL(out); drawPhotos(); }
       });
     },
     async onSave(v) {
-      const images = []; for (const f of $('#files').files) { try { images.push(await Img.add(f)); } catch (e) { /* skip unreadable file */ } }
+      const images = []; for (const p of photos) { try { images.push(await Img.add(p.blob || p.file)); } catch (e) { /* skip unreadable file */ } }
+      photos.forEach((p) => URL.revokeObjectURL(p.url));
       Data.addUpdate(pid, sid, { id: uid(), date: toISO(new Date()), progress: v.progress, note: v.note, images }); changed(t('tSaved'));
     }
   });
@@ -249,7 +261,7 @@ document.addEventListener('change', async (e) => {
     try { await Backup.import(el.files[0]); AutoBackup.markExported(); Notify.check(); closeModal(); render(); toast(t('sImpOk')); } catch (x) { toast(t('sImpBad')); }
   }
 });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!modal.hidden) closeModal(); else closeReport(); } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (PhotoEditor.isOpen()) PhotoEditor.close(); else if (!modal.hidden) closeModal(); else closeReport(); } });
 window.addEventListener('hashchange', () => { if (Data.db && Auth.ok) { closeReport(); render(); } });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && Auth.ok && Data.db) { Notify.check(); AutoBackup.check().then(() => { if (AutoBackup.due()) render(true); }); updateBadge(); } });
 

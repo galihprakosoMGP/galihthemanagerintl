@@ -24,29 +24,29 @@ const defaultPositions = () => DEFAULT_POS.map((id) => ({ id, name: '' }));
 const defaultAutoBackup = () => ({ on: true, days: 14, lastExport: 0, lastSnap: 0, snooze: 0, start: Date.now() });
 
 function seedData() {
-  let n = 100; // fictional phone numbers (UK drama range)
-  const T = (...list) => list.map(([name, role], i) => ({ id: uid(), name, role, phone: `+44 7700 900${n++}`, kind: i === 0 ? 'head' : i === 1 ? 'deputy' : 'member' }));
+  let n = 10; // fictional US phone numbers (555-01xx is reserved for fiction)
+  const T = (...list) => list.map(([name, role], i) => ({ id: uid(), name, role, phone: `+1 555 01${String(n++).padStart(2, '0')}`, kind: i === 0 ? 'head' : i === 1 ? 'deputy' : 'member' }));
   const U = (ago, progress, note) => ({ id: uid(), date: dayOffset(-ago), progress, note, images: [] });
   const S = (name, target, progress, due, issue, people, updates = []) => ({ id: uid(), name, target, progress, deadline: dayOffset(due), issue, people, updates });
   return {
     notifications: [], notified: [], settings: { notif: false, positions: defaultPositions(), autoBackup: defaultAutoBackup() },
     projects: [
       { id: uid(), name: 'VOLTRA Model A1', desc: 'Electric sedan, 500 km range', start: dayOffset(-100), deadline: dayOffset(80), subs: [
-        S('Prototype Specialist', 'Prototype v3 ready for road testing', 78, 30, '', T(['Raka Pratama', 'Head of Prototyping'], ['Dewi Anggraini', 'Deputy, chassis integration'], ['Tom Becker', 'Test driver'], ['Ana Silva', 'Mechanical technician']), [U(20, 60, 'Frame assembly finished.'), U(6, 78, 'Road-test slot booked for next month.')]),
-        S('Motor Specialist', 'Motor 220 kW passes dyno test', 55, 45, 'Magnet supplier delayed by 2 weeks', T(['Hendra Wijaya', 'Powertrain engineer (PhD)'], ['Sinta Maharani', 'Electromagnetics'], ['Luca Rossi', 'Winding specialist'], ['Mei Lin', 'Test engineer'])),
-        S('ESC Specialist', 'ESC firmware v2.0 stable', 40, 40, 'Overheating bug at 90% load', T(['Bagas Nugroho', 'Embedded software lead'], ['Laras Putri', 'Power electronics'], ['Jonas Weber', 'Firmware engineer'], ['Carla Mendes', 'Thermal analyst']), [U(14, 30, 'Bench test reproduced the overheating bug.'), U(5, 40, 'Fix candidate is under review.')]),
-        S('QA Specialist', 'Pass 100% of safety tests', 62, 70, '', T(['Maya Kusuma', 'Head of QA'], ['Eko Saputra', 'Safety auditor'], ['Hanna Visser', 'Test coordinator'])),
-        S('Regulation Specialist', 'Type approval (homologation)', 85, 60, '', T(['Dimas Hartono', 'Regulatory affairs lead'], ['Rina Oktaviani', 'Compliance officer'], ['Pablo Ortega', 'Documentation']))
+        S('Prototype Specialist', 'Prototype v3 ready for road testing', 78, 30, '', T(['Michael Carter', 'Head of Prototyping'], ['Emily Johnson', 'Deputy, chassis integration'], ['Tom Becker', 'Test driver'], ['Sophie Martin', 'Mechanical technician']), [U(20, 60, 'Frame assembly finished.'), U(6, 78, 'Road-test slot booked for next month.')]),
+        S('Motor Specialist', 'Motor 220 kW passes dyno test', 55, 45, 'Magnet supplier delayed by 2 weeks', T(['David Miller', 'Powertrain engineer (PhD)'], ['Sarah Williams', 'Electromagnetics'], ['Luca Rossi', 'Winding specialist'], ['Anna Kowalski', 'Test engineer'])),
+        S('ESC Specialist', 'ESC firmware v2.0 stable', 40, 40, 'Overheating bug at 90% load', T(['James Anderson', 'Embedded software lead'], ['Jessica Brown', 'Power electronics'], ['Jonas Weber', 'Firmware engineer'], ['Maria Garcia', 'Thermal analyst']), [U(14, 30, 'Bench test reproduced the overheating bug.'), U(5, 40, 'Fix candidate is under review.')]),
+        S('QA Specialist', 'Pass 100% of safety tests', 62, 70, '', T(['Emma Wilson', 'Head of QA'], ['Daniel Moore', 'Safety auditor'], ['Hanna Visser', 'Test coordinator'])),
+        S('Regulation Specialist', 'Type approval (homologation)', 85, 60, '', T(['Robert Taylor', 'Regulatory affairs lead'], ['Olivia Davis', 'Compliance officer'], ['Pablo Ortega', 'Documentation']))
       ] },
       { id: uid(), name: 'VOLTRA Model C3 SUV', desc: 'Family SUV, 7 seats', start: dayOffset(-40), deadline: dayOffset(200), subs: [
-        S('Battery Specialist', '90 kWh pack passes thermal test', 35, 120, '', T(['Yoga Firmansyah', 'Battery systems lead'], ['Nadia Safitri', 'Cell chemistry'], ['Ken Tanaka', 'Thermal engineer'])),
-        S('Chassis Specialist', 'Frame passes crash test', 20, 100, '', T(['Teguh Santoso', 'Structural engineer'], ['Wulan Sari', 'Materials'], ['Omar Haddad', 'CAE analyst'])),
-        S('Software Specialist', 'Vehicle OS beta release', 10, 90, '3 firmware engineers short', T(['Aditya Rahman', 'Software architect'], ['Intan Permata', 'Embedded lead'], ['Sofia Petrov', 'UI developer']))
+        S('Battery Specialist', '90 kWh pack passes thermal test', 35, 120, '', T(['Christopher Evans', 'Battery systems lead'], ['Rachel Thompson', 'Cell chemistry'], ['Lars Nielsen', 'Thermal engineer'])),
+        S('Chassis Specialist', 'Frame passes crash test', 20, 100, '', T(['Matthew Clark', 'Structural engineer'], ['Laura Hughes', 'Materials'], ['Pierre Dubois', 'CAE analyst'])),
+        S('Software Specialist', 'Vehicle OS beta release', 10, 90, '3 firmware engineers short', T(['Andrew Scott', 'Software architect'], ['Megan Turner', 'Embedded lead'], ['Sofia Petrov', 'UI developer']))
       ] },
       { id: uid(), name: 'VOLTRA Model T2 City Car', desc: 'Compact city car', start: dayOffset(-150), deadline: dayOffset(15), subs: [
-        S('Prototype Specialist', 'Pilot production of 50 units', 100, -5, '', T(['Fajar Ramadhan', 'Production lead'], ['Citra Lestari', 'Line supervisor'], ['Ivan Kuznetsov', 'Assembly technician'])),
-        S('QA Specialist', 'First batch quality check', 96, -3, 'Waiting for repaint test results', T(['Lina Marlina', 'QA lead'], ['Arif Budiman', 'Inspector'], ['Eva Jansen', 'Paint specialist'])),
-        S('Regulation Specialist', 'Road-legal registration', 88, 10, '', T(['Surya Dharma', 'Regulatory lead'], ['Tika Anindita', 'Legal liaison']))
+        S('Prototype Specialist', 'Pilot production of 50 units', 100, -5, '', T(['Kevin Roberts', 'Production lead'], ['Amanda Lewis', 'Line supervisor'], ['Marco Bianchi', 'Assembly technician'])),
+        S('QA Specialist', 'First batch quality check', 96, -3, 'Waiting for repaint test results', T(['Jennifer Walker', 'QA lead'], ['Brian Hall', 'Inspector'], ['Eva Jansen', 'Paint specialist'])),
+        S('Regulation Specialist', 'Road-legal registration', 88, 10, '', T(['Steven Young', 'Regulatory lead'], ['Nicole King', 'Legal liaison']))
       ] }
     ]
   };

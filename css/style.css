@@ -279,3 +279,24 @@ html[dir=rtl] input[type=tel],html[dir=rtl] input[type=number],html[dir=rtl] inp
 
 /* Install self-check (Settings) */
 .chklist{display:grid;gap:4px;font-size:13px}.chklist li{display:flex;gap:8px}.chklist .ok{color:var(--ok);font-weight:700}.chklist .no{color:var(--late);font-weight:700}
+
+/* Photo editor (rotate + crop) and the photo list of the progress-update form */
+.editor{position:fixed;top:0;right:0;bottom:0;left:0;z-index:100;display:flex;flex-direction:column;background:#04080f;padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0)}
+.ed-bar{display:flex;gap:10px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.ed-stage{flex:1;min-height:0;display:grid;place-items:center;padding:14px;overflow:hidden}
+.ed-wrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none}.ed-wrap canvas{display:block}
+.ed-crop{position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.62);cursor:move;touch-action:none;
+  background-image:linear-gradient(#fff6,#fff6),linear-gradient(#fff6,#fff6),linear-gradient(#fff6,#fff6),linear-gradient(#fff6,#fff6);background-size:1px 100%,1px 100%,100% 1px,100% 1px;background-position:33.33% 0,66.66% 0,0 33.33%,0 66.66%;background-repeat:no-repeat}
+.ed-crop .h{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px}
+.ed-crop .h::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;background:#fff;border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.55)}
+.h-nw{left:0;top:0;cursor:nwse-resize}.h-n{left:50%;top:0;cursor:ns-resize}.h-ne{left:100%;top:0;cursor:nesw-resize}.h-e{left:100%;top:50%;cursor:ew-resize}
+.h-se{left:100%;top:100%;cursor:nwse-resize}.h-s{left:50%;top:100%;cursor:ns-resize}.h-sw{left:0;top:100%;cursor:nesw-resize}.h-w{left:0;top:50%;cursor:ew-resize}
+.ed-wrap.locked .h-n,.ed-wrap.locked .h-e,.ed-wrap.locked .h-s,.ed-wrap.locked .h-w{display:none}
+.ed-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:10px 12px;border-top:1px solid var(--line)}
+.ed-rs{display:flex;gap:6px;flex-wrap:wrap}
+.edr{min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:99px;background:transparent;color:var(--tx);font:inherit;font-weight:600;cursor:pointer}.edr.on{background:var(--or);border-color:var(--or);color:var(--on-or)}
+.ed-act{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line)}
+.pimg{position:relative;width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--line);cursor:pointer}
+.pimg img{width:100%;height:100%;object-fit:cover;border-radius:0;display:block}
+.pimg button{position:absolute;width:28px;height:28px;border:0;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;font-size:16px;line-height:1;cursor:pointer;padding:0}
+.pimg .px{top:3px;inset-inline-end:3px}.pimg .pe{bottom:3px;inset-inline-end:3px}
